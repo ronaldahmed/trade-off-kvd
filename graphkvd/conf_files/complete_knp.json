@@ -1,0 +1,6 @@
+{
+  "selection": ["knp"],
+  "scale1": ["cnt","lvl","subtree","comb","btw","cls","eigen"],
+  "wm_size" : [5,20,50,100],
+  "num_recall": [5]
+} 
