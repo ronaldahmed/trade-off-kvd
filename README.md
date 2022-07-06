@@ -6,22 +6,12 @@ This repository contains code to replicate the results presented in our [paper](
 ```
 @misc{https://doi.org/10.48550/arxiv.2205.10192,
   doi = {10.48550/ARXIV.2205.10192},
-  
   url = {https://arxiv.org/abs/2205.10192},
-  
   author = {Cardenas, Ronald and Galle, Matthias and Cohen, Shay B.},
-  
-  keywords = {Computation and Language (cs.CL), FOS: Computer and information sciences, FOS: Computer and information sciences},
-  
   title = {On the Trade-off between Redundancy and Local Coherence in Summarization},
-  
   publisher = {arXiv},
-  
-  year = {2022},
-  
-  copyright = {arXiv.org perpetual, non-exclusive license}
+  year = {2022}
 }
-
 ```
 
 
@@ -48,7 +38,7 @@ Each dataset split is a line-wise pickle file, each sample with the format
 }
 ```
 
-# Preprocessing ArXiv and PubMed from scratch
+## Preprocessing ArXiv and PubMed from scratch
 
 Download Cohan dataset from [here](https://github.com/armancohan/long-summarization) and unzip them.  
 The preprocessing scripts assume the following directory structure
@@ -70,7 +60,7 @@ You will need [UDPipe 1.2.0](https://ufal.mff.cuni.cz/udpipe/1) dependency parse
 Then, refer to `data_preprocessing/preprocessing_steps.sh`.
 
 
-## Running the KvD Summarizers
+### Running the KvD Summarizers
 
 The systems load their hyperparameter configuration from a JSON or CSV file in the config_files subfolder.  
 For instance, to run TreeKvD over the test set of arXiv with the hyper-parameters reported in the paper, use
