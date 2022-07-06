@@ -105,4 +105,4 @@ python run_ppl_lcoh.py -d arxiv -s test --pred <prediction JSON file>
 python report_evaluation.py -d arxiv -s test -nj <num-cpus> --pred_file <prediction JSON file> --output <CSV file name>
 ```
 
-In all cases, argument `--pred` can also be a folder name, in which case the evaluation runs for each ``.json` file found inside.
+In all cases, argument `--pred` can also be a folder name, in which case the evaluation runs for each `.json` file found inside.

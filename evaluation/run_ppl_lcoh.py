@@ -64,15 +64,10 @@ if __name__ == '__main__':
   tokenizer = AutoTokenizer.from_pretrained('allenai/scibert_scivocab_uncased')
 
   sys_ppl = {}
-  cnt = 0
   for block in load_data_block(fn,predictions):
     for item in block:
       cand = [item["section_sents"][x][y] for x,y in item["preds"]]
       sys_ppl[item["id"]] = calc_ppl(model,tokenizer," ".join(cand),tokenizer.mask_token_id)
-
-      if cnt % 500 == 0:
-        print(">",cnt,sys_ppl[item["id"]])
-      cnt += 1
   #
   ofn = args.pred[:-4] + "ppl"
   with open(ofn,"w") as out:
