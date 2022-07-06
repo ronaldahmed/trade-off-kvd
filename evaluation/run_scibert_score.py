@@ -8,10 +8,8 @@ import pdb
 from collections import defaultdict
 from math import log
 
-MYTOOLS = os.environ.get("MYTOOLS",None)
+
 sys.path.append("../common")
-if MYTOOLS is not None:
-  sys.path.append(MYTOOLS)
 from scibert_score.scorer import SciBertScorer
 from eval_utils import load_data_block
 
@@ -47,7 +45,6 @@ if __name__ == '__main__':
     obj = pickle.load(infile)
     for k,v in obj.items():
       idf_dict[k] = v
-  baseline_fn = f"/disk/ocean/rcardenas/datasets/{args.dataset}/scb_baseline.tsv"
   bscore = SciBertScorer(model_type="allenai/scibert_scivocab_uncased",
                          idf=True, idf_dict=idf_dict,
                          nthreads=args.njobs)

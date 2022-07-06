@@ -41,7 +41,7 @@ done
 
 
 CUDA_VISIBLE_DEVICES=${GPU} python run_srouge.py -d ${DATASET} -s ${SPLIT} -nj ${NJOBS} --pred ../${KVD}/exps/${DATASET}-${SPLIT}
-CUDA_VISIBLE_DEVICES=${GPU} python run_scibert.py -d ${DATASET} -s ${SPLIT} -nj ${NJOBS} --pred ../${KVD}/exps/${DATASET}-${SPLIT}
+CUDA_VISIBLE_DEVICES=${GPU} python run_scibert_score.py -d ${DATASET} -s ${SPLIT} -nj ${NJOBS} --pred ../${KVD}/exps/${DATASET}-${SPLIT}
 
 python run_summeval.py -d ${DATASET} -s ${SPLIT} -nj ${NJOBS} --pred ../${KVD}/exps/${DATASET}-${SPLIT}
 

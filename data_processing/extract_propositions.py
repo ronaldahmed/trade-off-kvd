@@ -1,3 +1,6 @@
+"""
+Extracts propositions and proposition trees from each sentence in the source document and target summary
+"""
 import os,sys
 
 sys.path.append("../common")
@@ -26,20 +29,6 @@ class Processor:
     self.in_block = 100
     self.njobs = args.njobs
     self.args = args
-
-  # reads in blocks
-  # def read_lines(self,):
-  #   block = []
-  #   for line in open(self.input_fn,"r"):
-  #     line=line.strip("\n")
-  #     if line=="": continue
-  #     block.append(json.loads(line))
-  #     if len(block)==self.in_block:
-  #       yield block
-  #       block = []
-  #   #
-  #   if len(block)>0:
-  #     yield block 
 
   def read_lines(self,):
     id_len = []
@@ -105,21 +94,10 @@ class Processor:
           for item in block:
             # start = time.time() ##
             clean_item = self.run_parallel(item)
-            # done = time.time()
-            # nprops = len(clean_item["section_props"]) + len(clean_item["abstract_props"])
-            # print("[item] Duration: ",done - start)
-            # print("[item] Nprops=",nprops)
-            # print()
-            # total_time += done - start
-            # total_props += nprops
             pkler.dump(clean_item)
-
-            # if cnt>5: break
             cnt += 1
           #
         #
-        # print("[main] Average Prop extraction time per prop:",total_time / total_props)
-        # print("[main] Average Prop extraction time per doc:",total_time / cnt)
       #
           #
       #

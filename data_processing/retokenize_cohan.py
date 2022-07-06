@@ -1,6 +1,5 @@
 """
 Re-process / tokenize PubMed and ArXiv
-(thank you Cohan)
 """
 import os
 import pdb
@@ -126,16 +125,6 @@ class Processor:
         for block in self.read_lines():
           for item in block:
             clean_item = self.run_parallel(item)
-
-            # print("Original-----------------------------------------")
-            # pprint(item["sections"][0])
-            # print()
-            # print("Cleaned-----------------------------------------")
-            # pprint(clean_item["sections"][0])
-            # print("[[[check abstract")
-            # pdb.set_trace()
-            # print()
-
             outfile.write(json.dumps(clean_item) + "\n")
 
     else:
@@ -163,7 +152,6 @@ class Processor:
       text = pre
     #
     text = pre
-    # text = self.md.detokenize(self.mt.tokenize(self.md.detokenize(self.mpn.normalize(text).split())))
     raw = self.md.detokenize(self.mpn.normalize(text).split())
     if do_sent_tok:
       text = []

@@ -1,8 +1,9 @@
 """
-Applies the cohan's discard filter
-- abstract min of 5 tokens
-- each sections min of 5 tokens
-- each sent truncated to 200 toks
+Runs UDPipe parser to documents and abstract sentences in the ArXiv and Pubmed dataset.
+Filters applied
+- abstract minimum of 5 tokens
+- each sections minimum of 5 tokens
+- each sentence truncated to 200 tokens
 """
 
 import os,sys
@@ -37,12 +38,6 @@ class Processor:
     self.reg_citations = re.compile(r"(@\s*xcite[0-9]*)|(\[[,0-9]+\])")
     self.reg_eqs = re.compile(r"@\s*xmath[0-9]*")
     self.reg_empty = re.compile(r"(\(\s*\)|\[\s*\])")
-    self.id_list = None
-    if args.id_list != "ALL":
-      self.id_list = [x for x in open(args.id_list,"r").read().strip("\n").split("\n") if x!=""]
-      print("[Processor] loaded ids=",len(self.id_list))
-    else:
-      self.id_list = args.id_list
 
   # reads in blocks
   def read_lines(self,):
@@ -75,7 +70,7 @@ class Processor:
     with open(fn,"w") as outfn:
       outfn.write("\n".join(sents)+"\n")
 
-    with Popen(["udpipe","--tokenizer=presegmented","--tag","--parse","--output","conllu=v2","../../tools/english-ewt-ud-2.5-191206.udpipe",fn],\
+    with Popen(["udpipe","--tokenizer=presegmented","--tag","--parse","--output","conllu=v2",self.args.parser,fn],\
       stdout=sp.PIPE) as pobj:
       parsed = pobj.stdout.read().decode("utf-8")
     try:
@@ -97,10 +92,6 @@ class Processor:
     idxs = []
     sec_names = [x.lower() for x in item["section_names"]]
     idxs = list(range(len(sec_names)))
-    # if   self.args.doc_type == "doc":
-    # elif self.args.doc_type == "idc":
-    #   idxs = [i for i,x in enumerate(sec_names) \
-    #       if any(["introduction" in x, "discussion" in x, "conclusion" in x, "summary " in x])]
     if len(idxs)==0:
       return None
     sections = [item["sections"][i] for i in idxs]
@@ -139,20 +130,10 @@ class Processor:
             # start = time.time() ##
             clean_item = self.run_parallel(item)
             if item is not None:
-              # done = time.time()
-              # nsents = sum(len(x) for x in item["sections"]) + len(item["abstract_text"])
-              # print("[item] Duration: ",done - start  )
-              # print("[item] Nsents=",nsents)
-              # total_time += done - start
-              # total_sents += nsents
-              # pdb.set_trace()
               outfile.write(json.dumps(clean_item) + "\n")
               cnt += 1
-            # if cnt>5: break
           #
       #
-      # print("[main] Average UD time per sent:",total_time / total_sents)
-      # print("[main] Average UD time per sent:",total_time / cnt)
 
     else:
       with Pool(processes=self.njobs) as pool:
@@ -171,8 +152,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser() 
   parser.add_argument("--dataset", "-d", type=str, help="dataset name [cnn,dm]", default="pubmed")
   parser.add_argument("--split", "-s", type=str, help="split [strain,train,valid,test]", default="valid")
-  # parser.add_argument("--doc_type", "-dt", type=str, help="whole article or intro [doc,idc,intersec]", default="idc")
-  parser.add_argument("--id_list", "-ilist", type=str, help="list of ids to include", default="ALL")
+  parser.add_argument("--parser", "-parser", type=str, help="path to UDpipe model", default="../../tools/english-ewt-ud-2.5-191206.udpipe")
   parser.add_argument("--njobs", "-nj", type=int, help="njobs", default=28)
 
   args = parser.parse_args()
