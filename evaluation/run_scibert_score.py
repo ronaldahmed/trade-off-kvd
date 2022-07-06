@@ -7,19 +7,63 @@ import glob as gb
 import pdb
 from collections import defaultdict
 from math import log
+import logging
+import transformers
+transformers.tokenization_utils.logger.setLevel(logging.ERROR)
+transformers.configuration_utils.logger.setLevel(logging.ERROR)
+transformers.modeling_utils.logger.setLevel(logging.ERROR)
+from bert_score import BERTScorer
 
 
 sys.path.append("../common")
-from scibert_score.scorer import SciBertScorer
 from eval_utils import load_data_block
 
 
-N_DOCS = {
-  "arxiv": 23532536,
-  "pubmed": 10894852,
-}
-
 ############################################################################
+
+
+def score_all(bscore, summaries, references_list):
+  summaries = [flatten(summary) for summary in summaries]
+  references_list = [[flatten(reference) for reference in references] for references in references_list]
+
+  # Create the candidate and reference lists for passing to the scoring function
+  input_candidates = []
+  input_references = []
+  empty_inputs = set()
+  for i, (summary, references) in enumerate(zip(summaries, references_list)):
+      if len(summary) == 0:
+          empty_inputs.add(i)
+      else:
+          input_candidates.append(summary)
+          input_references.append(references)
+  
+  # print("[score_all] debug input format...")
+  # pdb.set_trace()
+
+  # Score the summaries
+  precisions, recalls, f1s = bscore.score(input_candidates,input_references)
+  # Remap the scores to the summaries
+  index = 0
+  metrics_lists = []
+  for i, summary in enumerate(summaries):
+      if i in empty_inputs:
+          precision, recall, f1 = 0.0, 0.0, 0.0
+      else:
+          precision = precisions[index].item()
+          recall = recalls[index].item()
+          f1 = f1s[index].item()
+          index += 1
+      metrics_lists.append(MetricsDict({
+          'bertscore': {
+              'precision': precision,
+              'recall': recall,
+              'f1': f1,
+          }
+      }))
+  return metrics_lists
+
+
+  ################################################################################
 
 
 if __name__ == '__main__':
@@ -39,18 +83,12 @@ if __name__ == '__main__':
   pred_files = [args.pred]
   if os.path.isdir(args.pred):
     pred_files = gb.glob(os.path.join(args.pred,"*.json"))
-  # load preprocessed vars
-  idf_dict = defaultdict(lambda: log((N_DOCS[args.dataset] + 1) / (1)))
-  with open(f"../../datasets/{args.dataset}/idf_dict.pkl","rb") as infile:
-    obj = pickle.load(infile)
-    for k,v in obj.items():
-      idf_dict[k] = v
-  bscore = SciBertScorer(model_type="allenai/scibert_scivocab_uncased",
-                         idf=True, idf_dict=idf_dict,
-                         nthreads=args.njobs)
-                         # rescale_with_baseline=True,
-                         # baseline_path=baseline_fn,
   
+  bscore = BERTScorer(lang="en-sci",
+                      idf=True,
+                      rescale_with_baseline=False,
+                      nthreads=args.njobs)
+
   print("Loaded:",len(pred_files),"files")
   for pred_file in pred_files:
     print("[main] processing {%s}" % pred_file)
@@ -77,7 +115,7 @@ if __name__ == '__main__':
         summaries.append(summ)
         references.append([item["abs_sents"]])
     #
-    bsc_list = bscore.score_all(summaries,references)
+    bsc_list = score_all(bscore,summaries,references)
     for did,bsc in zip(did_seq,bsc_list):
       metrics[did] = {k:v*100.0 for k,v in bsc["bertscore"].items()}
     #

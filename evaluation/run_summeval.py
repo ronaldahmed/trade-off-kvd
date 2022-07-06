@@ -48,42 +48,12 @@ def run_parallel(bundle):
   res = {}
   for k,v in red_dict.items():
     res[k] = v
-    # res["rsc_" + k] = rescale(v,baseline[k])
   
   for k in ['coverage', 'density', 'compression', 'summary_length']:
     res[k] = rdict[k]
 
   return did,res
 
-def rescale(val,baseline):
-    return (val - baseline + 1e-15) / (1.0 - baseline + 1e-15)
-
-
-# def get_red_baselines(args):
-#   abs_red_scores = json.load(open(f"analysis/{args.dataset}-{args.split}_abs-red.json"))
-#   # ured = np.array([x["ref_u"] for x in abs_red_scores.values()])
-#   # nidred = np.array([x["ref_nid"] for x in abs_red_scores.values()])
-#   # rep = np.array([x["ref_rep-red"] for x in abs_red_scores.values()])
-
-#   baselines = {
-#       "u-u": np.mean([x["ref_u-u"] for x in abs_red_scores.values()]),
-#       "u-b": np.mean([x["ref_u-b"] for x in abs_red_scores.values()]),
-#       "u-t": np.mean([x["ref_u-t"] for x in abs_red_scores.values()]),
-#       "u": np.mean([x["ref_u"] for x in abs_red_scores.values()]),
-#       "nid-u": np.mean([x["ref_nid-u"] for x in abs_red_scores.values()]),
-#       "nid-b": np.mean([x["ref_nid-b"] for x in abs_red_scores.values()]),
-#       "nid-t": np.mean([x["ref_nid-t"] for x in abs_red_scores.values()]),
-#       "nid": np.mean([x["ref_nid"] for x in abs_red_scores.values()]),
-#       # "rep-u": np.mean([x["ref_rep-u"] for x in abs_red_scores.values()]),
-#       # "rep-b": np.mean([x["ref_rep-b"] for x in abs_red_scores.values()]),
-#       # "rep-t": np.mean([x["ref_rep-t"] for x in abs_red_scores.values()]),
-#       # "rep": np.mean([x["ref_rep"] for x in abs_red_scores.values()]),
-#       "r1": np.mean([x["ref_r1"] for x in abs_red_scores.values()]),
-#       "r2": np.mean([x["ref_r2"] for x in abs_red_scores.values()]),
-#       "rl": np.mean([x["ref_rl"] for x in abs_red_scores.values()]),
-#   }
-#   # return tuple(list(baselines.items()))
-#   return baselines
 
 ############################################################################
 

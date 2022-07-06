@@ -7,18 +7,6 @@ import glob as gb
 import numpy as np
 import pdb
 
-# DSTATS = [
-# 'coverage', 'density', 'compression', 'summary_length',
-# "u-red","nid-red","rep-red",
-# "rsc_u-red","rsc_nid-red","rsc_rep-red",
-# # 'percentage_novel_1-gram',
-# # 'percentage_novel_2-gram',
-# # 'percentage_novel_3-gram',
-# # 'percentage_repeated_1-gram_in_summ',
-# # 'percentage_repeated_2-gram_in_summ',
-# # 'percentage_repeated_3-gram_in_summ',
-# ]
-
 
 def get_str(values):
   if len(values)==0: return "-"
@@ -68,17 +56,20 @@ if __name__ == '__main__':
         assert os.path.exists(base+"srouge")
         assert os.path.exists(base+"scibert")
         assert os.path.exists(base+"dstats")
+        assert os.path.exists(base+"ppl")
       except:
         pdb.set_trace()
 
       bscore = json.load(open(base+"scibert","r"))
       rouge  = json.load(open(base+"srouge","r"))
       dstats = json.load(open(base+"dstats","r"))
+      lcoh = json.load(open(base+"ppl","r"))
       dstats_keys = list((list(dstats.values())[0]).keys())
 
       item = {
         "System": os.path.basename(base.rstrip(".")),
-        "ScBert-F1": get_str([x["f1"] for x in bscore.values()])
+        "SciBS-F1": np.mean([x["f1"] for x in bscore.values()]),
+        "PPL": np.mean([y for x,y in lcoh.items() if not np.isnan(y)])
       }
       for k in ["rouge-1","rouge-2","rouge-l"]:
         item[k] = get_str([x[k]["f1"] for x in rouge.values()])

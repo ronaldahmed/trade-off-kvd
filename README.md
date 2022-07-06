@@ -38,7 +38,7 @@ Each dataset split is a line-wise pickle file, each sample with the format
 }
 ```
 
-## Preprocessing ArXiv and PubMed from scratch
+### Preprocessing ArXiv and PubMed from scratch
 
 Download Cohan dataset from [here](https://github.com/armancohan/long-summarization) and unzip them.  
 The preprocessing scripts assume the following directory structure
@@ -60,13 +60,13 @@ You will need [UDPipe 1.2.0](https://ufal.mff.cuni.cz/udpipe/1) dependency parse
 Then, refer to `data_preprocessing/preprocessing_steps.sh`.
 
 
-### Running the KvD Summarizers
+## Running the KvD Summarizers
 
-The systems load their hyperparameter configuration from a JSON or CSV file in the config_files subfolder.  
+The systems load their hyperparameter configuration from a JSON or CSV file in the `config_files` subfolder.  
 For instance, to run TreeKvD over the test set of arXiv with the hyper-parameters reported in the paper, use
 ```
 cd treekvd/
-python run.py -d arxiv -s test -nj <number-of-cpus> -eid <experiment-name> -c conf_files/recommended.json
+python run.py -d arxiv -s test -nj <num-cpus> --exp_id <experiment-name> --conf conf_files/recommended.json
 ```
 
 The predictions will be saved in folder `treekvd/exps/<experiment-name>/arxiv-test/`.  
@@ -76,11 +76,29 @@ If you wish to run more configurations at a time, you can add more rows to the C
 
 ## Evaluation
 
-We provide an evaluation pipeline that obtains relevance, redundancy, and local coherence metrics.
-For instance, to evaluate the recently run TreeKvD over arXiv test set, run
+Move into `evaluation/` folder and run the following scripts according to the desired metric.  
+- ROUGE scores
+```
+python run_srouge.py -d arxiv -s test -nj <num-cpus> --pred <prediction JSON file>
+```
 
+- Redundancy metrics and candidate summary statistics such as summary length, coverage, and density.
 ```
-bash pipeline_kvd.sh -d arxiv -s test -n <number-of-cpus> -g <gpu id> -k treekvd
+python run_summeval.py -d arxiv -s test -nj <num-cpus> --pred <prediction JSON file>
 ```
-To evaluate a GraphKvD model, use `-k graphkvd` instead.  
+
+- Bert-Score with SciBert as core
+```
+python run_scibert_score.py -d arxiv -s test -nj <num-cpus> --pred <prediction JSON file>
+```
+
+- Local coherence as language model perplexity.
+```
+python run_ppl_lcoh.py -d arxiv -s test --pred <prediction JSON file>
+```
+- Aggregate all results into a CSV table
+```
+python report_evaluation.py -d arxiv -s test -nj <num-cpus> --pred_file <prediction JSON file> --output <CSV file name>
+```
+
 
