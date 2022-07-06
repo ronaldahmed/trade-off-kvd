@@ -42,7 +42,14 @@ class SentGraphKvDRunner(BaseRunner):
       selected = knp_selection_sent(sent_scores,sent_lens,budget=self.budget,w_hard_thr=self.wthr)
     return selected
 
-
+  """
+  Runs GraphKvD for a sample item
+  returns [
+    id : Str  # original Cohan ID,
+    selected: List[(int,int)] # list of selected sentence IDs in (section id, relative position of sentence in section)
+    p_scores: Dict{int: float} # final score of propositions mapped by proposition ID
+    ]
+  """
   def run_parallel(self,item):
     proc = GraphKvD(item["doc_props"],self.params)
     proc.run(item["section_ptrees"],item["section_sents"])
@@ -57,7 +64,3 @@ class SentGraphKvDRunner(BaseRunner):
 
     return item["id"],selected,p_scores
 
-
-############################################################################################################
-# Prop based extraction
-#

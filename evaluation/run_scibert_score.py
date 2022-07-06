@@ -16,7 +16,6 @@ transformers.configuration_utils.logger.setLevel(logging.ERROR)
 transformers.modeling_utils.logger.setLevel(logging.ERROR)
 from bert_score import BERTScorer
 
-
 sys.path.append("../common")
 from eval_utils import load_data_block
 
@@ -62,7 +61,23 @@ def score_all(bscore, summaries, references_list):
   return metrics_lists
 
 
-  ################################################################################
+"""
+loads 100k sentences from the training set
+"""
+def get_idf_sentences(dataset):
+  sents = []
+  cnt = 0
+  for line in open(f"../../datasets/{dataset}/train-retok.jsonl"):
+    line = line.strip("\n")
+    if line=="": continue
+    item = json.loads(line)
+    sents.extend([x for sec in item["sections"] for x in sec])
+    if len(sents) >=100000:
+      break
+  return sents[:100000]
+
+
+################################################################################
 
 
 if __name__ == '__main__':
@@ -85,6 +100,7 @@ if __name__ == '__main__':
   
   bscore = BERTScorer(lang="en-sci",
                       idf=True,
+                      idf_sents=get_idf_sentences(args.dataset),
                       rescale_with_baseline=False,
                       nthreads=args.njobs)
 

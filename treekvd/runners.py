@@ -43,7 +43,14 @@ class SentTreeKvDRunner(BaseRunner):
       selected = knp_selection_sent(scores,sent_lens,budget=self.budget,w_hard_thr=self.wthr)
     return selected
 
-
+  """
+  Runs TreeKvD for a sample item
+  returns [
+    id : Str  # original Cohan ID,
+    selected: List[(int,int)] # list of selected sentence IDs in (section id, relative position of sentence in section)
+    p_scores: Dict{int: float} # final score of propositions mapped by proposition ID
+    ]
+  """
   def run_parallel(self,item):
     proc = TreeKvd(item["doc_props"],self.params)
     for psec in item["section_ptrees"]:
@@ -59,7 +66,3 @@ class SentTreeKvDRunner(BaseRunner):
 
     return item["id"],selected,p_scores
 
-
-############################################################################################################
-# Prop based extraction
-#
