@@ -18,6 +18,10 @@ This repository contains code to replicate the results presented in our [paper](
 ## Installation
 
 Create a python environment with Python 3.7 and the libraries in `requirements.txt`.
+Additionally, you will need Spacy EN model for evaluation
+```
+python -m spacy download en_core_web_sm
+```
 
 
 ## Dataset files
@@ -101,4 +105,4 @@ python run_ppl_lcoh.py -d arxiv -s test --pred <prediction JSON file>
 python report_evaluation.py -d arxiv -s test -nj <num-cpus> --pred_file <prediction JSON file> --output <CSV file name>
 ```
 
-
+In all cases, argument `--pred` can also be a folder name, in which case the evaluation runs for each ``.json` file found inside.

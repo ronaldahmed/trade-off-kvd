@@ -9,6 +9,8 @@ from collections import defaultdict
 from math import log
 import logging
 import transformers
+from sacrerouge.common.util import flatten
+from sacrerouge.data import MetricsDict
 transformers.tokenization_utils.logger.setLevel(logging.ERROR)
 transformers.configuration_utils.logger.setLevel(logging.ERROR)
 transformers.modeling_utils.logger.setLevel(logging.ERROR)
@@ -36,9 +38,6 @@ def score_all(bscore, summaries, references_list):
       else:
           input_candidates.append(summary)
           input_references.append(references)
-  
-  # print("[score_all] debug input format...")
-  # pdb.set_trace()
 
   # Score the summaries
   precisions, recalls, f1s = bscore.score(input_candidates,input_references)
@@ -77,7 +76,7 @@ if __name__ == '__main__':
 
   args = parser.parse_args()
 
-  print("[EVALUATION] SCIBERT----------------------------")
+  print("[EVALUATION] SCIBERT-SCORE ----------------------------")
   print(args)
 
   pred_files = [args.pred]
