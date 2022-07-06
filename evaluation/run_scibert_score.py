@@ -103,6 +103,7 @@ if __name__ == '__main__':
                       idf_sents=get_idf_sentences(args.dataset),
                       rescale_with_baseline=False,
                       nthreads=args.njobs)
+  bscore._tokenizer.model_max_length = 512
 
   print("Loaded:",len(pred_files),"files")
   for pred_file in pred_files:
