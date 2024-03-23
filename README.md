@@ -1,6 +1,7 @@
-# KvD systems for redundancy and local coherence in summaries
+# Trade-off between Informativeness, Redundancy, and Local Coherence in Extractive Summarization
 
-We introduced two extractive summarization systems, TreeKvD and GraphKvD, based on the Micro-Macro Structure Theory of human reading comprehension (Kintsch & van Dijk, 1978), a.k.a. 'KvD'.  
+We introduced two extractive summarization systems, TreeKvD and GraphKvD, based on the Micro-Macro Structure Theory of human reading comprehension (Kintsch & van Dijk, 1978; aka 'KvD'),
+equipped with control mechanisms to balance properties in the final summary such as informativeness, redundancy, and cohesion.
 This repository contains code to replicate the results presented in our [paper](https://arxiv.org/abs/2205.10192)  
 
 ```
